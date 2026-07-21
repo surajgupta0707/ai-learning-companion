@@ -80,6 +80,33 @@ if uploaded_files:
 # 5. Create a "Memory Bank" for the chat history
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+    
+with st.sidebar:
+    st.header("💾 Save Your Notes")
+    st.markdown("Download your conversation to review later.")
+    
+    # Format the chat history into a clean text document
+    transcript = "📚 AI Study Assistant - Notes\n"
+    transcript += "="*40 + "\n\n"
+    
+    for msg in st.session_state.chat_history:
+        if isinstance(msg, HumanMessage):
+            transcript += f"🧑‍🎓 You: {msg.content}\n\n"
+        elif isinstance(msg, AIMessage):
+            transcript += f"🤖 AI: {msg.content}\n"
+            transcript += "-"*40 + "\n\n"
+    
+    # The Download Button
+    if len(st.session_state.chat_history) > 0:
+        st.download_button(
+            label="📥 Download Study Notes",
+            data=transcript,
+            file_name="study_notes.txt",
+            mime="text/plain",
+            use_container_width=True
+        )
+    else:
+        st.info("Start chatting to enable downloads!")
 
 # 6. Draw all previous messages on the screen
 for msg in st.session_state.chat_history:
